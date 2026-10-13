@@ -271,7 +271,7 @@ def _parse_ship_config(path: str) -> "Tuple[SoupConfig, Optional[ShipConfig]]":
 
     try:
         text = _safe_read_text(path, "--config path", _MAX_CONFIG_BYTES)
-        cfg = load_config_from_string(text)
+        cfg = load_config_from_string(text, max_bytes=_MAX_CONFIG_BYTES)
     except (ValueError, TypeError, yaml.YAMLError) as exc:
         _fail(f"--config: {exc}", _EXIT_USAGE)
     ship_cfg = cfg.eval.ship if cfg.eval is not None else None

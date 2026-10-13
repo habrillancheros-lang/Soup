@@ -15,12 +15,12 @@ from pathlib import Path
 from typing import Callable, Literal, Mapping, Optional
 from urllib.parse import urlparse
 
-import yaml
 from pydantic import BaseModel, Field, field_validator
 
 from soup_cli import __version__
 from soup_cli.eval.results import newest_eval_rows
 from soup_cli.utils.paths import atomic_write_text, is_under_cwd
+from soup_cli.utils.yaml_limits import MAX_CONFIG_BYTES, load_yaml_file_limited
 
 logger = logging.getLogger(__name__)
 
@@ -132,7 +132,9 @@ def load_suite(path: str) -> EvalSuite:
         )
     if not suite_path.exists():
         raise FileNotFoundError(f"eval-gate suite not found: {path}")
-    data = yaml.safe_load(suite_path.read_text(encoding="utf-8")) or {}
+    data = load_yaml_file_limited(
+        suite_path, f"eval-gate suite '{path}'", max_bytes=MAX_CONFIG_BYTES
+    ) or {}
     return EvalSuite(**data)
 
 

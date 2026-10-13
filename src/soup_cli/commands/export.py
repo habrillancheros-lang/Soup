@@ -1546,7 +1546,7 @@ def _export_torchao_cli(
     try:
         cfg_data = load_quant_config(quant_config)
     except (TypeError, ValueError, FileNotFoundError) as exc:
-        console.print(f"[red]{exc}[/]")
+        console.print(f"[red]{for_terminal(str(exc))}[/]")
         raise typer.Exit(2)
 
     scheme_raw = cfg_data.get("scheme")
